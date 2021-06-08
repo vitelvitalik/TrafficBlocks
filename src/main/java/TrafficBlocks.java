@@ -7,7 +7,6 @@ import java.util.*;
 
 public class TrafficBlocks {
     public static void main(String[] args) {
-
         String str = args[1];
         DateTimeFormatter dtfArgs = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         LocalDate searchDate = LocalDate.parse(str, dtfArgs);
@@ -20,17 +19,25 @@ public class TrafficBlocks {
                 list.add(bufferedReader.readLine().split("(,)(?=(?:[^\"]|\"[^\"]*\")*$)"));
             }
 
-            int indexOfColumn = 0;
+            int indexOfColumnStart = 0;
             for (int x = 0; x < list.get(0).length; x++)
                 if (list.get(0)[x].equals("Дата начала ограничения")) {
-                    indexOfColumn = x;
+                    indexOfColumnStart = x;
                 }
+
+            int indexOfColumnFinish = 0;
+            for (int x = 0; x < list.get(0).length; x++)
+                if (list.get(0)[x].equals("Дата окончания ограничения")) {
+                    indexOfColumnFinish = x;
+                }
+
 
             int countOfDays = 0;
             for (int y = 1; y < list.size(); y++) {
                 DateTimeFormatter dtfColumn = DateTimeFormatter.ofPattern("yyyyMMdd");
-                LocalDate columnDate = LocalDate.parse(list.get(y)[indexOfColumn], dtfColumn);
-                if (columnDate.isEqual(searchDate)){
+                LocalDate columnDateStart = LocalDate.parse(list.get(y)[indexOfColumnStart], dtfColumn);
+                LocalDate columnDateFinish = LocalDate.parse(list.get(y)[indexOfColumnFinish], dtfColumn);
+                if (columnDateStart.isBefore(searchDate) && columnDateFinish.isAfter(searchDate)){
                     countOfDays++;
                 }
             }
